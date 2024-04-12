@@ -3,10 +3,12 @@ import { ScrollTrigger } from "gsap/all";
 import { useEffect, useState } from "react";
 import { ReactLenis } from "@studio-freight/react-lenis";
 
-const frameCount = 28;
+const fromFrame = 10000;
+const toFrame = 11379;
+const frameCount = toFrame - fromFrame;
 
 function App() {
-  const [frame, setFrame] = useState(0);
+  const [frame, setFrame] = useState(fromFrame);
 
   useEffect(() => {
     // if (!videoRef) return;
@@ -23,7 +25,7 @@ function App() {
         onUpdate: (e) => {
           // setProgress(e.progress);
           let f = Math.floor(frameCount * e.progress);
-          setFrame(f);
+          setFrame(f + fromFrame);
         },
       },
     });
@@ -42,7 +44,7 @@ function App() {
         className="flex flex-col items-center w-screen h-[10000px]"
       >
         <img
-          src={`/sequence2/${frame.toString().padStart(4, "0")}.jpg`}
+          src={`/sequence/${frame.toString().padStart(8, "0")}.webp`}
           className="fixed top-0 left-0 w-screen h-screen object-cover"
         />
       </div>

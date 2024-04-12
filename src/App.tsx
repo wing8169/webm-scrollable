@@ -1,10 +1,13 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
-import { useEffect, useRef } from "react";
-import videoUrl from "/video.webm";
+import { useEffect, useState } from "react";
+import { ReactLenis } from "@studio-freight/react-lenis";
+
+const frameCount = 28;
 
 function App() {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [frame, setFrame] = useState(0);
+
   useEffect(() => {
     // if (!videoRef) return;
     gsap.registerPlugin(ScrollTrigger);
@@ -19,29 +22,31 @@ function App() {
         scrub: 4,
         onUpdate: (e) => {
           // setProgress(e.progress);
-          if (!videoRef.current?.duration) return;
-          videoRef.current.currentTime = videoRef.current.duration * e.progress;
-          console.log("setting time to", videoRef.current.currentTime);
+          let f = Math.floor(frameCount * e.progress);
+          setFrame(f);
         },
       },
     });
   }, []);
 
   return (
-    <div
-      id="gsap-container"
-      className="flex flex-col items-center w-screen h-[10000px]"
+    <ReactLenis
+      root
+      options={{
+        syncTouch: true,
+        smoothWheel: true,
+      }}
     >
-      <video
-        className="w-screen h-screen object-cover fixed top-0 left-0"
-        muted
-        playsInline
-        ref={videoRef}
+      <div
+        id="gsap-container"
+        className="flex flex-col items-center w-screen h-[10000px]"
       >
-        <source src={videoUrl} type="video/webm" />
-        Your browser does not support the video tag.
-      </video>
-    </div>
+        <img
+          src={`/sequence2/${frame.toString().padStart(4, "0")}.jpg`}
+          className="fixed top-0 left-0 w-screen h-screen object-cover"
+        />
+      </div>
+    </ReactLenis>
   );
 }
 
